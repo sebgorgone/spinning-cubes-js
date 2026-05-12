@@ -1,6 +1,8 @@
-import React, { useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import p5 from 'p5';
-import intialize from './modules/initialization.js';
+import intialize, { drawGrid, getRatio, rhombi } from './modules/initialization.js';
+import { getCenters } from './modules/enumerate.js';
+import { rotate } from './modules/spin.js';
 
 /**
  * TurningCubes Component
@@ -25,11 +27,18 @@ const TurningCubes = ({ width, height, scale, colors }) => {
       p.setup = () => {
         p.createCanvas(width, height);
         p.background(51);
-        intialize(p, width, height, scale);
+        getRatio(width, height, scale)
+        intialize(p, width, height);
+        p.frameRate(0.5);
       };
 
 
       p.draw = () => {
+        drawGrid(p, colors);
+        const validCenters = getCenters();
+        const randCenter = Math.floor(Math.random() * validCenters.length);
+        console.log(validCenters)
+        rotate(rhombi, validCenters[randCenter]);
 
 
       };
@@ -41,7 +50,7 @@ const TurningCubes = ({ width, height, scale, colors }) => {
         sketchRef.current.remove();
       }
     };
-  }, [width, height]);
+  }, [width, height, scale, colors]);
 
   return <div ref={containerRef} />;
 };
